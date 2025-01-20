@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
     private SensorManager mSensorManager;
     private Sensor mSensorAccelerometer;
 
-    // components: always non-null (after onCreate())
+     // components: always non-null (after onCreate())
     private BluetoothRemoteControl bluetoothRemoteControl;
     private PermissionHandler permissionHandler;
     private SettingsManager settingsManager;

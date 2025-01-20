@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         />
-    
+
     <ImageButton
         android:id="@+id/take_photo"
         android:layout_width="100dp"
@@ -23,6 +23,7 @@
         android:layout_centerVertical="true"
         android:background="@null"
         />
+
 
     <ImageButton
         android:id="@+id/switch_camera"
@@ -198,6 +199,19 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/action_settings"
         android:src="@drawable/settings"
+        android:background="@color/icons_background"
+        android:backgroundTint="@color/icons_background_tint"
+        android:backgroundTintMode="src_in"
+        android:onClick="clickedSettings"
+        />
+    <ImageButton
+        android:id="@+id/water_mode"
+        android:layout_width="@dimen/onscreen_button_size"
+        android:layout_height="@dimen/onscreen_button_size"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/action_settings"
+        android:src="@drawable/baseline_water_72"
         android:background="@color/icons_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
@@ -612,8 +626,7 @@
     <FrameLayout
         android:id="@+id/locker"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
     <ScrollView
         android:id="@+id/popup_container"

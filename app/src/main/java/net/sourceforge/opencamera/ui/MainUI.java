@@ -316,6 +316,7 @@ public class MainUI {
             else {
                 buttons_permanent.add(main_activity.findViewById(R.id.gallery));
             }
+            buttons_permanent.add(main_activity.findViewById(R.id.water_mode));
             buttons_permanent.add(main_activity.findViewById(R.id.settings));
             buttons_permanent.add(main_activity.findViewById(R.id.popup));
             buttons_permanent.add(main_activity.findViewById(R.id.exposure));
@@ -446,6 +447,9 @@ public class MainUI {
             layoutParams.setMargins(0, 0, navigation_gap, 0);
             view.setLayoutParams(layoutParams);
             setViewRotation(view, ui_rotation);
+
+            //view = main_activity.findViewById(R.id.test_button);
+            //setViewRotation(view, ui_rotation);
 
             view = main_activity.findViewById(R.id.switch_camera);
             layoutParams = (RelativeLayout.LayoutParams)view.getLayoutParams();
@@ -1062,6 +1066,9 @@ public class MainUI {
                 View popupButton = main_activity.findViewById(R.id.popup);
                 View galleryButton = main_activity.findViewById(R.id.gallery);
                 View settingsButton = main_activity.findViewById(R.id.settings);
+
+                View waterModeButton = main_activity.findViewById(R.id.water_mode);
+
                 View zoomControls = main_activity.findViewById(R.id.zoom);
                 View zoomSeekBar = main_activity.findViewById(R.id.zoom_seekbar);
                 View focusSeekBar = main_activity.findViewById(R.id.focus_seekbar);
@@ -1096,6 +1103,8 @@ public class MainUI {
                 popupButton.setVisibility(visibility);
                 galleryButton.setVisibility(visibility);
                 settingsButton.setVisibility(visibility);
+                waterModeButton.setVisibility(visibility);
+
                 if( MyDebug.LOG ) {
                     Log.d(TAG, "has_zoom: " + main_activity.getPreview().supportsZoom());
                 }
