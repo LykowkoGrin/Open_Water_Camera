@@ -3773,7 +3773,7 @@ public class MainActivity extends Activity {
                     if( MyDebug.LOG )
                         Log.d(TAG, "returned single fileUri: " + fileUri);
                     // persist permission just in case?
-                    final int takeFlags = resultData.getFlags()
+                    int takeFlags = resultData.getFlags()
                             & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     try {
