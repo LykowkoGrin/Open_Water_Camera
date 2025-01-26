@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id = "@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
@@ -215,8 +216,51 @@
         android:background="@color/icons_background"
         android:backgroundTint="@color/icons_background_tint"
         android:backgroundTintMode="src_in"
-        android:onClick="clickedSettings"
+        android:onClick="startUnderwaterMode"
         />
+
+    <ImageButton
+        android:id="@+id/done_edit_mode"
+        android:layout_width="@dimen/onscreen_button_size"
+        android:layout_height="@dimen/onscreen_button_size"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/action_settings"
+        android:src="@drawable/baseline_done_all_72"
+        android:background="@color/icons_background"
+        android:backgroundTint="@color/icons_background_tint"
+        android:backgroundTintMode="src_in"
+        android:visibility="gone"
+        />
+
+    <ImageButton
+        android:id="@+id/water_edit_mode"
+        android:layout_width="@dimen/onscreen_button_size"
+        android:layout_height="@dimen/onscreen_button_size"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/action_settings"
+        android:src="@drawable/baseline_edit_square_72"
+        android:background="@color/icons_background"
+        android:backgroundTint="@color/icons_background_tint"
+        android:backgroundTintMode="src_in"
+        android:visibility="gone"
+        />
+    <ImageButton
+        android:id="@+id/add_button"
+        android:layout_width="@dimen/onscreen_button_size"
+        android:layout_height="@dimen/onscreen_button_size"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/action_settings"
+        android:src="@drawable/baseline_add_box_72"
+        android:background="@color/icons_background"
+        android:backgroundTint="@color/icons_background_tint"
+        android:backgroundTintMode="src_in"
+        android:visibility="gone"
+        />
+
+
 
     <ImageButton
         android:id="@+id/popup"
@@ -645,5 +689,20 @@
         android:visibility="gone"
         android:importantForAccessibility="no"
         />
+
+    <ScrollView
+        android:id="@+id/water_popup_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:visibility="gone">
+
+
+        <LinearLayout
+            android:id="@+id/water_item_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
     
 </RelativeLayout>

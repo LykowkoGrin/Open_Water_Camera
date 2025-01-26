@@ -1,6 +1,7 @@
 package net.sourceforge.opencamera.ui;
 
 import net.sourceforge.opencamera.MyApplicationInterface;
+import net.sourceforge.opencamera.UnderwaterInterface;
 import net.sourceforge.opencamera.cameracontroller.CameraController;
 import net.sourceforge.opencamera.MainActivity;
 import net.sourceforge.opencamera.MyDebug;
@@ -96,10 +97,13 @@ public class MainUI {
     public int test_saved_popup_height;
     public volatile int test_navigation_gap;
 
-    public MainUI(MainActivity main_activity) {
+    private UnderwaterInterface underwaterInterface;
+
+    public MainUI(MainActivity main_activity,UnderwaterInterface underwaterInterface) {
         if( MyDebug.LOG )
             Log.d(TAG, "MainUI");
         this.main_activity = main_activity;
+        this.underwaterInterface = underwaterInterface;
 
         this.setSeekbarColors();
     }
@@ -174,7 +178,7 @@ public class MainUI {
         }
     }
 
-    private void layoutUI(boolean popup_container_only) {
+    public void layoutUI(boolean popup_container_only) {
         long debug_time = 0;
         if( MyDebug.LOG ) {
             Log.d(TAG, "layoutUI");
@@ -316,7 +320,9 @@ public class MainUI {
             else {
                 buttons_permanent.add(main_activity.findViewById(R.id.gallery));
             }
+            buttons_permanent.add(main_activity.findViewById(R.id.add_button));
             buttons_permanent.add(main_activity.findViewById(R.id.water_mode));
+            buttons_permanent.add(main_activity.findViewById(R.id.done_edit_mode));
             buttons_permanent.add(main_activity.findViewById(R.id.settings));
             buttons_permanent.add(main_activity.findViewById(R.id.popup));
             buttons_permanent.add(main_activity.findViewById(R.id.exposure));
@@ -333,6 +339,7 @@ public class MainUI {
             buttons_permanent.add(main_activity.findViewById(R.id.face_detection));
             buttons_permanent.add(main_activity.findViewById(R.id.audio_control));
             buttons_permanent.add(main_activity.findViewById(R.id.kraken_icon));
+            buttons_permanent.add(main_activity.findViewById(R.id.water_edit_mode));
 
             List<View> buttons_all = new ArrayList<>(buttons_permanent);
             // icons which only sometimes show on the icon panel:
@@ -450,6 +457,10 @@ public class MainUI {
 
             //view = main_activity.findViewById(R.id.test_button);
             //setViewRotation(view, ui_rotation);
+
+            for(View imgButton : underwaterInterface.getImageButtons()){
+                setViewRotation(imgButton, ui_rotation);
+            }
 
             view = main_activity.findViewById(R.id.switch_camera);
             layoutParams = (RelativeLayout.LayoutParams)view.getLayoutParams();
@@ -677,6 +688,58 @@ public class MainUI {
             view.setLayoutParams(lp);
         }
 
+        if(underwaterInterface.waterPopupIsOpen()){
+
+            final View waterContainer = main_activity.findViewById(R.id.water_popup_container);
+
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)waterContainer.getLayoutParams();
+            if( ui_placement == UIPlacement.UIPLACEMENT_TOP ) {
+                layoutParams.addRule(align_right, 0);
+                layoutParams.addRule(above, 0);
+                layoutParams.addRule(below, 0);
+                layoutParams.addRule(left_of, 0);
+                layoutParams.addRule(right_of, R.id.popup);
+                layoutParams.addRule(align_parent_top, RelativeLayout.TRUE);
+                layoutParams.addRule(align_parent_bottom, RelativeLayout.TRUE);
+            }
+            else {
+                layoutParams.addRule(align_right, R.id.popup);
+                layoutParams.addRule(above, 0);
+                layoutParams.addRule(below, R.id.popup);
+                layoutParams.addRule(left_of, 0);
+                layoutParams.addRule(right_of, 0);
+                layoutParams.addRule(align_parent_top, 0);
+                layoutParams.addRule(align_parent_bottom, RelativeLayout.TRUE);
+            }
+            waterContainer.setLayoutParams(layoutParams);
+
+            waterContainer.getViewTreeObserver().addOnGlobalLayoutListener(
+                    new OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            if( MyDebug.LOG )
+                                Log.d(TAG, "onGlobalLayout()");
+                            // We need to call setPopupViewRotation after the above layout param changes
+                            // have taken effect, otherwise we can have problems due to popup_height being incorrect.
+                            // Example bugs:
+                            // Left-handed UI, portrait: Restart and open popup, it doesn't appear until device is rotated.
+                            // Top UI, reverse-portrait: Restart and open popup, it appears in wrong location.
+                            // Top UI, reverse-landscape: Restart and open popup, it appears in wrong location.
+                            setPopupViewRotation(waterContainer,ui_rotation, display_height);
+                            //setViewRotation(waterContainer, ui_rotation);
+                            // stop listening - only want to call this once!
+                            if( Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 ) {
+                                waterContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            }
+                            else {
+                                waterContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
+                        }
+                    }
+            );
+
+        }
+
         if( popupIsOpen() )
         {
             final View view = main_activity.findViewById(R.id.popup_container);
@@ -714,7 +777,7 @@ public class MainUI {
                             // Left-handed UI, portrait: Restart and open popup, it doesn't appear until device is rotated.
                             // Top UI, reverse-portrait: Restart and open popup, it appears in wrong location.
                             // Top UI, reverse-landscape: Restart and open popup, it appears in wrong location.
-                            setPopupViewRotation(ui_rotation, display_height);
+                            setPopupViewRotation(view,ui_rotation, display_height);
 
                             // stop listening - only want to call this once!
                             if( Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 ) {
@@ -738,10 +801,9 @@ public class MainUI {
         }
     }
 
-    private void setPopupViewRotation(int ui_rotation, int display_height) {
+    private void setPopupViewRotation(View view,int ui_rotation, int display_height) {
         if( MyDebug.LOG )
             Log.d(TAG, "setPopupViewRotation");
-        View view = main_activity.findViewById(R.id.popup_container);
         setViewRotation(view, ui_rotation);
         // reset:
         view.setTranslationX(0.0f);
@@ -791,6 +853,7 @@ public class MainUI {
             }
             else if( ui_rotation == 270 ) {
                 view.setTranslationY(display_height);
+
             }
         }
         else {
@@ -923,6 +986,10 @@ public class MainUI {
             remoteConnectedIcon.setVisibility(View.GONE);
         }
 
+    }
+
+    public int getCurrentOrientation() {
+        return current_orientation;
     }
 
     public void onOrientationChanged(int orientation) {
@@ -1067,7 +1134,7 @@ public class MainUI {
                 View galleryButton = main_activity.findViewById(R.id.gallery);
                 View settingsButton = main_activity.findViewById(R.id.settings);
 
-                View waterModeButton = main_activity.findViewById(R.id.water_mode);
+                //View waterModeButton = main_activity.findViewById(R.id.water_mode);
 
                 View zoomControls = main_activity.findViewById(R.id.zoom);
                 View zoomSeekBar = main_activity.findViewById(R.id.zoom_seekbar);
@@ -1103,7 +1170,7 @@ public class MainUI {
                 popupButton.setVisibility(visibility);
                 galleryButton.setVisibility(visibility);
                 settingsButton.setVisibility(visibility);
-                waterModeButton.setVisibility(visibility);
+                //waterModeButton.setVisibility(visibility);
 
                 if( MyDebug.LOG ) {
                     Log.d(TAG, "has_zoom: " + main_activity.getPreview().supportsZoom());
@@ -2090,6 +2157,7 @@ public class MainUI {
     public void closePopup() {
         if( MyDebug.LOG )
             Log.d(TAG, "close popup");
+        if(underwaterInterface.waterPopupIsOpen()) underwaterInterface.closeWaterPopup();
         if( popupIsOpen() ) {
             clearRemoteControlForPopup(); // must be called before we set popup_view_is_open to false; and before clearSelectionState() so we know which highlighting to disable
             clearSelectionState();

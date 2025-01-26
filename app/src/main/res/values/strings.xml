@@ -1049,4 +1049,7 @@
             <li>Bug fixes.\n</li>
         </ul>
     </string>
+
+    <string name="take_photo_option" translatable="false">Сделать фотографию</string>
+    <string name="take_video_option" translatable="false">Начать/остановить запись</string>
 </resources>

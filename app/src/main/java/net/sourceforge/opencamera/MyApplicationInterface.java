@@ -152,7 +152,10 @@ public class MyApplicationInterface extends BasicApplicationInterface {
     public volatile int test_n_videos_scanned;
     public volatile int test_max_mp;
 
-    MyApplicationInterface(MainActivity main_activity, Bundle savedInstanceState) {
+    private UnderwaterInterface underwaterInterface;
+
+    MyApplicationInterface(MainActivity main_activity, UnderwaterInterface underwaterInterface, Bundle savedInstanceState) {
+        this.underwaterInterface = underwaterInterface;
         long debug_time = 0;
         if( MyDebug.LOG ) {
             Log.d(TAG, "MyApplicationInterface");
@@ -1909,6 +1912,9 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if( sharedPreferences.getBoolean(PreferenceKeys.LockVideoPreferenceKey, false) ) {
             main_activity.lockScreen();
         }
+
+        underwaterInterface.startingVideo();
+
         main_activity.stopAudioListeners(); // important otherwise MediaRecorder will fail to start() if we have an audiolistener! Also don't want to have the speech recognizer going off
         ImageButton view = main_activity.findViewById(R.id.take_photo);
         view.setImageResource(R.drawable.take_video_recording);
@@ -1922,14 +1928,14 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if( MyDebug.LOG )
             Log.d(TAG, "startedVideo()");
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ) {
-            if( !( main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything() ) ) {
+            if( !underwaterInterface.getModeState() && !( main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything() ) ) {
                 View pauseVideoButton = main_activity.findViewById(R.id.pause_video);
                 pauseVideoButton.setVisibility(View.VISIBLE);
             }
             main_activity.getMainUI().setPauseVideoContentDescription();
         }
         if( main_activity.getPreview().supportsPhotoVideoRecording() && this.usePhotoVideoRecording() ) {
-            if( !( main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything() ) ) {
+            if( !underwaterInterface.getModeState() &&  !( main_activity.getMainUI().inImmersiveMode() && main_activity.usingKitKatImmersiveModeEverything() ) ) {
                 View takePhotoVideoButton = main_activity.findViewById(R.id.take_photo_when_video_recording);
                 takePhotoVideoButton.setVisibility(View.VISIBLE);
             }
@@ -2207,6 +2213,9 @@ public class MyApplicationInterface extends BasicApplicationInterface {
         if( MyDebug.LOG )
             Log.d(TAG, "stoppingVideo()");
         main_activity.unlockScreen();
+
+        underwaterInterface.stoppingVideo();
+
         ImageButton view = main_activity.findViewById(R.id.take_photo);
         view.setImageResource(R.drawable.take_video_selector);
         view.setContentDescription( getContext().getResources().getString(R.string.start_video) );

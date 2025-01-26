@@ -81,6 +81,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -199,6 +200,8 @@ public class MainActivity extends Activity {
     private static final float WATER_DENSITY_SALTWATER = 1.03f;
     private float mWaterDensity = 1.0f;
 
+    private UnderwaterInterface underwaterInterface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         long debug_time = 0;
@@ -234,6 +237,9 @@ public class MainActivity extends Activity {
             if( MyDebug.LOG )
                 Log.d(TAG, "take_photo?: " + getIntent().getExtras().getBoolean(TakePhoto.TAKE_PHOTO));
         }*/
+
+        underwaterInterface = new UnderwaterInterface(this);
+
         if( MyDebug.LOG ) {
             // whether called from Take Photo widget
             Log.d(TAG, "take_photo?: " + TakePhoto.TAKE_PHOTO);
@@ -272,9 +278,9 @@ public class MainActivity extends Activity {
         bluetoothRemoteControl = new BluetoothRemoteControl(this);
         permissionHandler = new PermissionHandler(this);
         settingsManager = new SettingsManager(this);
-        mainUI = new MainUI(this);
+        mainUI = new MainUI(this,underwaterInterface);
         manualSeekbars = new ManualSeekbars();
-        applicationInterface = new MyApplicationInterface(this, savedInstanceState);
+        applicationInterface = new MyApplicationInterface(this, underwaterInterface, savedInstanceState);
         if( MyDebug.LOG )
             Log.d(TAG, "onCreate: time after creating application interface: " + (System.currentTimeMillis() - debug_time));
         textFormatter = new TextFormatter(this);
@@ -5413,5 +5419,14 @@ public class MainActivity extends Activity {
 
     public boolean testHasNotification() {
         return has_notification;
+    }
+
+
+    public void startUnderwaterMode(View view){
+        if(!underwaterInterface.getModeState()){
+            underwaterInterface.startWaterMode();
+        }
+
+        else underwaterInterface.stopWaterMode();
     }
 }
