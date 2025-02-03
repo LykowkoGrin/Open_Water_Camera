@@ -1052,4 +1052,9 @@
 
     <string name="take_photo_option" translatable="false">Сделать фотографию</string>
     <string name="take_video_option" translatable="false">Начать/остановить запись</string>
+    <string name="pause_video_option" translatable="false">Приостановить/возобновить запись</string>
+    <string name="take_photo_when_video_recording_option" translatable="false">Сделать фото во время записи</string>
+    <string name="switch_camera_option" translatable="false">Повернуть камеру</string>
+    <string name="universal_button_option" translatable="false">Универсальная кнопка</string>
+
 </resources>

@@ -25,12 +25,14 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -41,6 +43,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.ZoomControls;
+
+import com.github.rongi.rotate_layout.layout.RotateLayout;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -280,14 +284,13 @@ public class MainUI {
             Log.d(TAG, "navigation_gap: " + navigation_gap);
         }
 
-        if( !popup_container_only )
-        {
+        if( !popup_container_only ) {
             // reset:
             top_icon = null;
 
             // we use a dummy button, so that the GUI buttons keep their positioning even if the Settings button is hidden (visibility set to View.GONE)
             View view = main_activity.findViewById(R.id.gui_anchor);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)view.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
             layoutParams.addRule(iconpanel_align_parent_left, 0);
             layoutParams.addRule(iconpanel_align_parent_right, RelativeLayout.TRUE);
             layoutParams.addRule(iconpanel_align_parent_top, RelativeLayout.TRUE);
@@ -301,7 +304,7 @@ public class MainUI {
             View previous_view = view;
 
             List<View> buttons_permanent = new ArrayList<>();
-            if( ui_placement == UIPlacement.UIPLACEMENT_TOP ) {
+            if (ui_placement == UIPlacement.UIPLACEMENT_TOP) {
                 // not part of the icon panel in TOP mode
                 view = main_activity.findViewById(R.id.gallery);
                 layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
@@ -316,8 +319,7 @@ public class MainUI {
                 layoutParams.setMargins(0, 0, navigation_gap, 0);
                 view.setLayoutParams(layoutParams);
                 setViewRotation(view, ui_rotation);
-            }
-            else {
+            } else {
                 buttons_permanent.add(main_activity.findViewById(R.id.gallery));
             }
             buttons_permanent.add(main_activity.findViewById(R.id.add_button));
@@ -346,8 +348,8 @@ public class MainUI {
             buttons_all.add(main_activity.findViewById(R.id.trash));
             buttons_all.add(main_activity.findViewById(R.id.share));
 
-            for(View this_view : buttons_all) {
-                layoutParams = (RelativeLayout.LayoutParams)this_view.getLayoutParams();
+            for (View this_view : buttons_all) {
+                layoutParams = (RelativeLayout.LayoutParams) this_view.getLayoutParams();
                 layoutParams.addRule(iconpanel_align_parent_left, 0);
                 layoutParams.addRule(iconpanel_align_parent_right, 0);
                 layoutParams.addRule(iconpanel_align_parent_top, RelativeLayout.TRUE);
@@ -362,26 +364,26 @@ public class MainUI {
             }
 
             int button_size = main_activity.getResources().getDimensionPixelSize(R.dimen.onscreen_button_size);
-            if( ui_placement == UIPlacement.UIPLACEMENT_TOP ) {
+            if (ui_placement == UIPlacement.UIPLACEMENT_TOP) {
                 // need to dynamically lay out the permanent icons
 
                 int count = 0;
                 View first_visible_view = null;
                 View last_visible_view = null;
-                for(View this_view : buttons_permanent) {
-                    if( this_view.getVisibility() == View.VISIBLE ) {
-                        if( first_visible_view == null )
+                for (View this_view : buttons_permanent) {
+                    if (this_view.getVisibility() == View.VISIBLE) {
+                        if (first_visible_view == null)
                             first_visible_view = this_view;
                         last_visible_view = this_view;
                         count++;
                     }
                 }
                 //count = 10; // test
-                if( MyDebug.LOG ) {
+                if (MyDebug.LOG) {
                     Log.d(TAG, "count: " + count);
                     Log.d(TAG, "display_height: " + display_height);
                 }
-                if( count > 0 ) {
+                if (count > 0) {
 					/*int button_size = display_height / count;
 					if( MyDebug.LOG )
 						Log.d(TAG, "button_size: " + button_size);
@@ -393,39 +395,38 @@ public class MainUI {
 							this_view.setLayoutParams(layoutParams);
 						}
 					}*/
-                    int total_button_size = count*button_size;
+                    int total_button_size = count * button_size;
                     int margin = 0;
-                    if( total_button_size > display_height ) {
-                        if( MyDebug.LOG )
+                    if (total_button_size > display_height) {
+                        if (MyDebug.LOG)
                             Log.d(TAG, "need to reduce button size");
                         button_size = display_height / count;
-                    }
-                    else {
-                        if( MyDebug.LOG )
+                    } else {
+                        if (MyDebug.LOG)
                             Log.d(TAG, "need to increase margin");
-                        if( count > 1 )
-                            margin = (display_height - total_button_size) / (count-1);
+                        if (count > 1)
+                            margin = (display_height - total_button_size) / (count - 1);
                     }
-                    if( MyDebug.LOG ) {
+                    if (MyDebug.LOG) {
                         Log.d(TAG, "button_size: " + button_size);
                         Log.d(TAG, "total_button_size: " + total_button_size);
                         Log.d(TAG, "margin: " + margin);
                     }
-                    for(View this_view : buttons_permanent) {
-                        if( this_view.getVisibility() == View.VISIBLE ) {
-                            if( MyDebug.LOG ) {
+                    for (View this_view : buttons_permanent) {
+                        if (this_view.getVisibility() == View.VISIBLE) {
+                            if (MyDebug.LOG) {
                                 Log.d(TAG, "set view layout for: " + this_view.getContentDescription());
-                                if( this_view==first_visible_view ) {
-                                    Log.d(TAG,"    first visible view");
+                                if (this_view == first_visible_view) {
+                                    Log.d(TAG, "    first visible view");
                                 }
                             }
                             //this_view.setPadding(0, margin/2, 0, margin/2);
-                            layoutParams = (RelativeLayout.LayoutParams)this_view.getLayoutParams();
+                            layoutParams = (RelativeLayout.LayoutParams) this_view.getLayoutParams();
                             // be careful if we change how the margins are laid out: it looks nicer when only the settings icon
                             // is displayed (when taking a photo) if it is still shown left-most, rather than centred; also
                             // needed for "pause preview" trash/icons to be shown properly (test by rotating the phone to update
                             // the layout)
-                            layoutParams.setMargins(0, this_view==first_visible_view ? 0 : margin/2, 0, this_view==last_visible_view ? 0 : margin/2);
+                            layoutParams.setMargins(0, this_view == first_visible_view ? 0 : margin / 2, 0, this_view == last_visible_view ? 0 : margin / 2);
                             layoutParams.width = button_size;
                             layoutParams.height = button_size;
                             this_view.setLayoutParams(layoutParams);
@@ -433,11 +434,10 @@ public class MainUI {
                     }
                     top_icon = first_visible_view;
                 }
-            }
-            else {
+            } else {
                 // need to reset size/margins to their default
-                for(View this_view : buttons_permanent) {
-                    layoutParams = (RelativeLayout.LayoutParams)this_view.getLayoutParams();
+                for (View this_view : buttons_permanent) {
+                    layoutParams = (RelativeLayout.LayoutParams) this_view.getLayoutParams();
                     layoutParams.setMargins(0, 0, 0, 0);
                     layoutParams.width = button_size;
                     layoutParams.height = button_size;
@@ -448,18 +448,24 @@ public class MainUI {
             // end icon panel
 
             view = main_activity.findViewById(R.id.take_photo);
-            layoutParams = (RelativeLayout.LayoutParams)view.getLayoutParams();
+            layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
             layoutParams.addRule(align_parent_left, 0);
             layoutParams.addRule(align_parent_right, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 0, navigation_gap, 0);
             view.setLayoutParams(layoutParams);
             setViewRotation(view, ui_rotation);
 
-            //view = main_activity.findViewById(R.id.test_button);
-            //setViewRotation(view, ui_rotation);
 
-            for(View imgButton : underwaterInterface.getImageButtons()){
-                setViewRotation(imgButton, ui_rotation);
+            for (View viewElement : underwaterInterface.getViewElements()) {
+                setViewRotation(viewElement, ui_rotation);
+            }
+
+
+
+            if (underwaterInterface.getWaterDialog() != null) {
+                View dialogView = underwaterInterface.getWaterDialog().getWindow().getDecorView();
+                RotateLayout rotateLayout = dialogView.findViewById(R.id.rotateLayout);
+                rotateLayout.setAngle(360 - ui_rotation);
             }
 
             view = main_activity.findViewById(R.id.switch_camera);
@@ -960,10 +966,12 @@ public class MainUI {
         if( main_activity.getPreview().isVideoRecordingPaused() ) {
             content_description = R.string.resume_video;
             pauseVideoButton.setImageResource(R.drawable.ic_play_circle_outline_white_48dp);
+            underwaterInterface.pausingVideo();
         }
         else {
             content_description = R.string.pause_video;
             pauseVideoButton.setImageResource(R.drawable.ic_pause_circle_outline_white_48dp);
+            underwaterInterface.resumingVideo();
         }
         if( MyDebug.LOG )
             Log.d(TAG, "content_description: " + main_activity.getResources().getString(content_description));
