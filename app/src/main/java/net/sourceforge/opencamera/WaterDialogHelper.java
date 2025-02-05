@@ -1,5 +1,6 @@
 package net.sourceforge.opencamera;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +25,7 @@ import java.util.List;
 public class WaterDialogHelper {
 
     public interface DialogListener {
-        void onApplyClicked(String[] selectedItems);
+        void onApplyClicked();
         void onDeleteClicked();
     }
 
@@ -38,7 +40,12 @@ public class WaterDialogHelper {
         Spinner spinner4 = dialogView.findViewById(R.id.spinner4);
 
 
-        List<String> data = Arrays.asList("Item 1", "Item 2", "Item 3");
+        List<String> data = Arrays.asList(
+                context.getString(R.string.click_action),
+                context.getString(R.string.hold_action),
+                context.getString(R.string.press_action),
+                context.getString(R.string.release_action)
+        );
 
         // Настройка адаптеров (обычный ArrayAdapter)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -54,26 +61,66 @@ public class WaterDialogHelper {
             spinner.setAdapter(adapter);
         }
 
-        // Настройка диалога
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setView(dialogView);
 
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Обработчики кнопок
-        dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> dialog.dismiss());
-        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
-            // Логика принятия
+
+        dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
             dialog.dismiss();
         });
+        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
+            listener.onApplyClicked();
+            dialog.dismiss();
+        });
+        dialogView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+            listener.onDeleteClicked();
+            dialog.dismiss();
+        });
+
 
         return dialog;
     }
 
-    private static float calculateScaleFactor(float rotationDegrees) {
+    public static AlertDialog showMinimalDialog(Context context, DialogListener listener){
+        if (!(context instanceof Activity)) {
+            Log.e("DialogError", "Context is not an Activity!");
+            return null;
+        }
 
-        double radians = Math.toRadians(rotationDegrees % 90);
-        return (float) (1f / Math.cos(radians));
+        // Создание View из layout-файла
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.minimal_water_dialog, null);
+
+        // Создание диалога с правильной темой
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        // Проверка активности перед отображением
+        if (!((Activity) context).isFinishing()) {
+            dialog.show();
+        } else {
+            Log.e("DialogError", "Activity is finishing!");
+            return null;
+        }
+
+
+        dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
+            listener.onApplyClicked();
+            dialog.dismiss();
+        });
+        dialogView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+            listener.onDeleteClicked();
+            dialog.dismiss();
+        });
+
+
+        return dialog;
     }
 }

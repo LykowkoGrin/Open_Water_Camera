@@ -12,7 +12,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:id="@+id/scrollView">
 
         <LinearLayout
@@ -21,26 +20,61 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Кастомные вращающиеся Spinner'ы -->
+            <!-- Спиннер 1 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/click_action"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"/>
+
             <Spinner
                 android:id="@+id/spinner1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Спиннер 2 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hold_action"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"/>
 
             <Spinner
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Спиннер 3 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/press_action"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"/>
 
             <Spinner
                 android:id="@+id/spinner3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Спиннер 4 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/release_action"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"/>
 
             <Spinner
                 android:id="@+id/spinner4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
 
             <!-- Кнопки действий -->
             <LinearLayout
@@ -54,19 +88,19 @@
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Отмена"/>
+                    android:text="@string/cancel_dialog" />
 
                 <Button
                     android:id="@+id/btnDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Удалить"/>
+                    android:text="@string/delete_dialog" />
 
                 <Button
                     android:id="@+id/btnAccept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Принять"/>
+                    android:text="@string/accept_dialog"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

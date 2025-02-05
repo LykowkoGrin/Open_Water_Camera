@@ -12,8 +12,18 @@ public class FuncButton {
     private OnPressListener pressListener = null;
     private OnReleaseListener releaseListener = null;
 
+    private String buttonName = "";
+
 
     //setDoubleClickListener,setHoldListener,setClickListener,setPressListener,setReleaseListener
+
+    public void setButtonName(String name){
+        buttonName = name;
+    }
+
+    public String getButtonName(){
+        return buttonName;
+    }
 
     public FuncButton(ImageButton imageButton) {
         this.imageButton = imageButton;
