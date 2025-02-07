@@ -17,7 +17,7 @@ public class MovableButton {
     private float touchStartY;
     private static final int TOUCH_SLOP = 10; // Порог для определения перетаскивания
 
-    private View.OnClickListener clickListener;
+    private MovableButton.OnClickListener clickListener = null;
 
 
     public MovableButton(ImageButton imageButton) {
@@ -25,7 +25,10 @@ public class MovableButton {
     }
 
     public void setupListeners() {
-        imageButton.setOnClickListener(clickListener);
+        imageButton.setOnClickListener((View v) -> {
+            if(clickListener != null) clickListener.onClick(this);
+        });
+
         imageButton.setOnDragListener(null);
 
         imageButton.setOnTouchListener((v, event) -> {
@@ -74,7 +77,7 @@ public class MovableButton {
         });
     }
 
-    public void setOnClickListener(View.OnClickListener listener){
+    public void setOnClickListener(MovableButton.OnClickListener listener){
         clickListener = listener;
     }
 
@@ -91,5 +94,9 @@ public class MovableButton {
 
     public ImageButton getButton() {
         return imageButton;
+    }
+
+    public interface OnClickListener{
+        void onClick(MovableButton btn);
     }
 }

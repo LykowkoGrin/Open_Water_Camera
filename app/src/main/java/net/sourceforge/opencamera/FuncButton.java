@@ -15,8 +15,6 @@ public class FuncButton {
     private String buttonName = "";
 
 
-    //setDoubleClickListener,setHoldListener,setClickListener,setPressListener,setReleaseListener
-
     public void setButtonName(String name){
         buttonName = name;
     }

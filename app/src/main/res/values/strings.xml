@@ -1050,6 +1050,7 @@
         </ul>
     </string>
 
+    <string name="nothing_option" translatable="false">Ничего</string>
     <string name="take_photo_option" translatable="false">Сделать фотографию</string>
     <string name="take_video_option" translatable="false">Начать/остановить запись</string>
     <string name="pause_video_option" translatable="false">Приостановить/возобновить запись</string>

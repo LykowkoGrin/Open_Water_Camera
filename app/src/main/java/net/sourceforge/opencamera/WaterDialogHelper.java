@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class WaterDialogHelper {
         void onApplyClicked();
         void onDeleteClicked();
     }
+
+
 
     public static AlertDialog showDialog(Context context, DialogListener listener) {
 
@@ -40,12 +43,10 @@ public class WaterDialogHelper {
         Spinner spinner4 = dialogView.findViewById(R.id.spinner4);
 
 
-        List<String> data = Arrays.asList(
-                context.getString(R.string.click_action),
-                context.getString(R.string.hold_action),
-                context.getString(R.string.press_action),
-                context.getString(R.string.release_action)
-        );
+        List<String> data = new ArrayList<>();
+        for(int id : SPINNER_IDS){
+            data.add(context.getString(id));
+        }
 
         // Настройка адаптеров (обычный ArrayAdapter)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -123,4 +124,15 @@ public class WaterDialogHelper {
 
         return dialog;
     }
+
+    public static final int[] SPINNER_IDS = {
+            R.string.nothing_option,
+            R.string.take_photo_option,
+            R.string.take_video_option,
+            R.string.pause_video_option,
+            R.string.take_photo_when_video_recording_option,
+            R.string.switch_camera_option
+    };
+
+
 }
