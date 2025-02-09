@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Open Camera</string>
+    <string name="app_name">Open Water Camera</string>
     <string name="action_settings">Parametrlər</string>
     <string name="action_popup">Popup parametrləri</string>
     <string name="intro_ok">OK (Bu mesaj bir daha göstərilməyəcək)</string>
@@ -322,5 +322,6 @@
     <string name="preference_immersive_mode_navigation">Hərəkət düyməsini gizlə</string>
     <string name="preference_immersive_mode_gui">GUI gizlə</string>
     <string name="preference_immersive_mode_everything">Hamısını gizlə</string>
+    <string name="preference_show_cycle_flash_summary">Open Camera</string>
 
 </resources>
