@@ -45,43 +45,7 @@ public class UnderwaterInterface {
     private AlertDialog waterDialog = null;
 
 
-    MovableButton.OnClickListener editClickListener = ((MovableButton v) -> {
-        waterDialog = WaterDialogHelper.showMinimalDialog(mainActivity, new WaterDialogHelper.DialogListener() {
-            @Override
-            public void onApplyClicked() {
 
-            }
-
-            @Override
-            public void onDeleteClicked() {
-                ((ViewManager)v.getButton().getParent()).removeView(v.getButton());
-                funcButtons.remove(v.getButton());
-            }
-        });
-        mainActivity.getMainUI().layoutUI();
-
-    });
-    MovableButton.OnClickListener editUniClickListener = ((MovableButton v) -> {
-        waterDialog = WaterDialogHelper.showDialog(mainActivity, new WaterDialogHelper.DialogListener() {
-            @Override
-            public void onApplyClicked() {
-                Spinner clickSpinner = waterDialog.findViewById(R.id.spinner1);
-                Spinner holdSpinner = waterDialog.findViewById(R.id.spinner2);
-                Spinner pressSpinner = waterDialog.findViewById(R.id.spinner3);
-                Spinner releaseSpinner = waterDialog.findViewById(R.id.spinner4);
-
-                //clickSpinner.getSelectedItemId();
-            }
-
-            @Override
-            public void onDeleteClicked() {
-                ((ViewManager)v.getButton().getParent()).removeView(v.getButton());
-                funcButtons.remove(v.getButton());
-            }
-        });
-        mainActivity.getMainUI().layoutUI();
-
-    });
 
     UnderwaterInterface(MainActivity mainActivity){
         this.mainActivity = mainActivity;
@@ -266,6 +230,48 @@ public class UnderwaterInterface {
 
         MovableButton movBtn = new MovableButton(btn.getButton());
 
+        MovableButton.OnClickListener editClickListener = (() -> {
+            waterDialog = WaterDialogHelper.showMinimalDialog(mainActivity, new WaterDialogHelper.DialogListener() {
+                @Override
+                public void onApplyClicked() {
+
+                }
+
+                @Override
+                public void onDeleteClicked() {
+                    ((ViewManager)btn.getButton().getParent()).removeView(btn.getButton());
+                    funcButtons.remove(btn.getButton());
+                }
+            });
+            mainActivity.getMainUI().layoutUI();
+
+        });
+        MovableButton.OnClickListener editUniClickListener = (() -> {
+            waterDialog = WaterDialogHelper.showDialog(mainActivity,(UniButton)btn, new WaterDialogHelper.DialogListener() {
+                @Override
+                public void onApplyClicked() {
+                    Spinner clickSpinner = waterDialog.findViewById(R.id.spinner1);
+                    Spinner holdSpinner = waterDialog.findViewById(R.id.spinner2);
+                    Spinner pressSpinner = waterDialog.findViewById(R.id.spinner3);
+                    Spinner releaseSpinner = waterDialog.findViewById(R.id.spinner4);
+
+                    ((UniButton)btn).setOnClickListener(UniButton.FunctionsNamesRes[(int) clickSpinner.getSelectedItemId()]);
+                    ((UniButton)btn).setOnLongClickListener(UniButton.FunctionsNamesRes[(int) holdSpinner.getSelectedItemId()]);
+                    ((UniButton)btn).setOnPressListener(UniButton.FunctionsNamesRes[(int) pressSpinner.getSelectedItemId()]);
+                    ((UniButton)btn).setOnReleaseListener(UniButton.FunctionsNamesRes[(int) releaseSpinner.getSelectedItemId()]);
+
+                }
+
+                @Override
+                public void onDeleteClicked() {
+                    ((ViewManager)btn.getButton().getParent()).removeView(btn.getButton());
+                    funcButtons.remove(btn.getButton());
+                }
+            });
+            mainActivity.getMainUI().layoutUI();
+
+        });
+
         if(btn.getButtonName().equals("universal_button_option"))
             movBtn.setOnClickListener(editUniClickListener);
         else
@@ -294,6 +300,7 @@ public class UnderwaterInterface {
                 newButton.getButton().setContentDescription(mainActivity.getString(R.string.take_photo));
                 newButton.getButton().setImageResource(R.drawable.take_photo_selector);
                 newButton.getButton().setBackgroundDrawable(null);
+
                 newButton.setOnClickListener((View v) -> {
                     if(mainActivity.getPreview().isVideo())
                         mainActivity.clickedSwitchVideo(v);
@@ -320,8 +327,8 @@ public class UnderwaterInterface {
                 newButton.getButton().setImageResource(R.drawable.take_video_selector);
                 newButton.getButton().setBackgroundDrawable(null);
                 newButton.setOnClickListener((View v) -> {
-                    if(!mainActivity.getPreview().isVideo())
-                        mainActivity.clickedSwitchVideo(v);
+                    if (!mainActivity.getPreview().isVideo())
+                        mainActivity.clickedSwitchVideo(null);
                     else
                         mainActivity.takePicture(false);
                 });
@@ -381,7 +388,7 @@ public class UnderwaterInterface {
                 newButton.getButton().setImageResource(R.drawable.ic_pause_circle_outline_white_48dp);
                 newButton.getButton().setBackgroundDrawable(null);
 
-                newButton.setOnClickListener((View v) -> mainActivity.clickedPauseVideo(v));
+                newButton.setOnClickListener((View v) -> mainActivity.clickedPauseVideo(null));
 
                 pauseListeners.add(isPause -> {
                     if(isPause)
@@ -409,12 +416,12 @@ public class UnderwaterInterface {
                 newButton.getButton().setContentDescription(mainActivity.getString(R.string.take_photo));
                 newButton.getButton().setImageResource(R.drawable.switch_camera);
                 newButton.getButton().setBackgroundDrawable(null);
-                newButton.setOnClickListener((View v) -> mainActivity.clickedSwitchCamera(v));
+                newButton.setOnClickListener((View v) -> mainActivity.clickedSwitchCamera(null));
                 break;
 
             case "universal_button_option":
 
-                newButton = new FuncButton(new ImageButton(mainActivity));
+                newButton = new UniButton(new ImageButton(mainActivity),mainActivity);
                 RelativeLayout.LayoutParams uniButtonParams = new RelativeLayout.LayoutParams(
                         dpToPx(mainActivity, 60),
                         dpToPx(mainActivity, 60)
@@ -479,6 +486,9 @@ public class UnderwaterInterface {
             itemContainer.addView(menuItem);
         }
     }
+
+
+
 
     final static String FILE_NAME = "WaterInterface.json";
 

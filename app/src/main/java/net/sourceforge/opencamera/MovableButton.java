@@ -26,7 +26,7 @@ public class MovableButton {
 
     public void setupListeners() {
         imageButton.setOnClickListener((View v) -> {
-            if(clickListener != null) clickListener.onClick(this);
+            if(clickListener != null) clickListener.onClick();
         });
 
         imageButton.setOnDragListener(null);
@@ -97,6 +97,6 @@ public class MovableButton {
     }
 
     public interface OnClickListener{
-        void onClick(MovableButton btn);
+        void onClick();
     }
 }

@@ -49,6 +49,7 @@ public class FuncButton {
         });
     }
 
+
     public void setOnClickListener(View.OnClickListener listener){
         clickListener = listener;
     }
@@ -65,6 +66,8 @@ public class FuncButton {
         releaseListener = listener;
     }
 
+
+
     static public interface OnPressListener{
         public void onPress();
     }
@@ -75,5 +78,6 @@ public class FuncButton {
     public ImageButton getButton() {
         return imageButton;
     }
+
 
 }

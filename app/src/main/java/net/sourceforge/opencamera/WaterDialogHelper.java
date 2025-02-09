@@ -30,9 +30,17 @@ public class WaterDialogHelper {
         void onDeleteClicked();
     }
 
+    static private int getSpinnerListId(int resourceId){
+        for(int i = 0;i < UniButton.FunctionsNamesRes.length;i++){
+            if(UniButton.FunctionsNamesRes[i] == resourceId)
+                return i;
+        }
+
+        return 0;
+    }
 
 
-    public static AlertDialog showDialog(Context context, DialogListener listener) {
+    public static AlertDialog showDialog(Context context,UniButton uniButton, DialogListener listener) {
 
         View dialogView = LayoutInflater.from(context).inflate(R.layout.water_dialog, null);
 
@@ -44,7 +52,7 @@ public class WaterDialogHelper {
 
 
         List<String> data = new ArrayList<>();
-        for(int id : SPINNER_IDS){
+        for(int id : UniButton.FunctionsNamesRes){
             data.add(context.getString(id));
         }
 
@@ -61,6 +69,11 @@ public class WaterDialogHelper {
         for (Spinner spinner : Arrays.asList(spinner1, spinner2, spinner3, spinner4)) {
             spinner.setAdapter(adapter);
         }
+
+        spinner1.setSelection(getSpinnerListId(uniButton.getClickListenerResId()));
+        spinner2.setSelection(getSpinnerListId(uniButton.getLongClickListenerResId()));
+        spinner3.setSelection(getSpinnerListId(uniButton.getOnPressListenerResId()));
+        spinner4.setSelection(getSpinnerListId(uniButton.getOnReleaseListenerResId()));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setView(dialogView);
@@ -112,10 +125,6 @@ public class WaterDialogHelper {
         dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
             dialog.dismiss();
         });
-        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
-            listener.onApplyClicked();
-            dialog.dismiss();
-        });
         dialogView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
             listener.onDeleteClicked();
             dialog.dismiss();
@@ -124,15 +133,6 @@ public class WaterDialogHelper {
 
         return dialog;
     }
-
-    public static final int[] SPINNER_IDS = {
-            R.string.nothing_option,
-            R.string.take_photo_option,
-            R.string.take_video_option,
-            R.string.pause_video_option,
-            R.string.take_photo_when_video_recording_option,
-            R.string.switch_camera_option
-    };
 
 
 }
