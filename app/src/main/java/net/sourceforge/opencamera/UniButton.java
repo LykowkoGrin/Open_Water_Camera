@@ -1,7 +1,11 @@
 package net.sourceforge.opencamera;
 
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.ImageButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UniButton extends FuncButton {
 
@@ -56,7 +60,31 @@ public class UniButton extends FuncButton {
         return uniOnReleaseListenerRes;
     }
 
+    public void setListenersByNames(List<String> strListeners){
 
+        if(strListeners.size() < 4) return;
+
+        Resources res = mainActivity.getResources();
+        String packageName = mainActivity.getPackageName();
+
+
+        setOnClickListener(res.getIdentifier(strListeners.get(0), "string", packageName));
+        setOnLongClickListener(res.getIdentifier(strListeners.get(1), "string", packageName));
+        setOnPressListener(res.getIdentifier(strListeners.get(2), "string", packageName));
+        setOnReleaseListener(res.getIdentifier(strListeners.get(3), "string", packageName));
+
+    }
+
+    public List<String> getListenersNames(){
+        List<String> names = new ArrayList<>();
+
+        names.add(mainActivity.getResources().getResourceEntryName(uniClickListenerRes));
+        names.add(mainActivity.getResources().getResourceEntryName(uniLongClickListenerRes));
+        names.add(mainActivity.getResources().getResourceEntryName(uniOnPressListenerRes));
+        names.add(mainActivity.getResources().getResourceEntryName(uniOnReleaseListenerRes));
+
+        return names;
+    }
 
 
     private Runnable getFuncByResId(int resourceId){

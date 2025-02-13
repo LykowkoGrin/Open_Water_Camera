@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 
 import java.util.ArrayList;
@@ -63,29 +64,73 @@ public class UnderwaterInterface {
 
     }
 
-    private void loadElements(){
-        Map<String, String> elementsMap = new HashMap<>();
+    private void loadElements() {
+
+
         File file = new File(mainActivity.getFilesDir(), FILE_NAME);
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<Map<String, String>>() {}.getType();
-                elementsMap = gson.fromJson(reader, type);
-                if (elementsMap == null) {
-                    elementsMap = new HashMap<>();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        Map<String, List<String>> elementsMap = new HashMap<>();
+
+        if (!file.exists()) return;
+
+        try (FileReader reader = new FileReader(file)) {
+            Gson gson = new Gson();
+
+            Type type = new TypeToken<Map<String, List<String>>>(){}.getType();
+            elementsMap = gson.fromJson(reader, type);
+
+            if (elementsMap == null) {
+                elementsMap = new HashMap<>();
             }
-        } else {
-            elementsMap = new HashMap<>();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        for(String key : elementsMap.keySet()){
+            String[] parts = key.split("#");
+
+            if (parts.length == 2) {
+                String message = parts[0];
+                String idStr = parts[1];
+
+                try {
+                    int id = Integer.parseInt(idStr);
+                    System.out.println("Сообщение: " + message + ", ID: " + id);
+
+
+                    if(message.equals("universal_button_option")){
+                        FuncButton funcButton = createButtonByName(message);
+                        ((UniButton)funcButton).setListenersByNames(elementsMap.get(key));
+                    }
+                    else createButtonByName(message);
+
+                } catch (NumberFormatException e) {
+                    System.err.println("Некорректный ID в ключе: " + key);
+                }
+            } else {
+                System.err.println("Некорректный формат ключа: " + key);
+            }
+        }
 
     }
 
     private void saveElements(){
-        Map<String, String> elementsMap = new HashMap<>();
+        Map<String, List<String>> elementsMap = new HashMap<>();
+
+        int i = 0;
+        for (FuncButton btn : funcButtons) {
+            List<String> btnParams = new ArrayList<>();
+
+            String btnSaveName = btn.getButtonName() + "#" + String.valueOf(i);
+
+            if(btn.getButtonName().equals("universal_button_option")){
+                btnParams = ((UniButton)btn).getListenersNames();
+            }
+            elementsMap.put(btnSaveName, btnParams);
+
+            i++;
+        }
+
 
         File file = new File(mainActivity.getFilesDir(), FILE_NAME);
         try (FileWriter writer = new FileWriter(file)) {
@@ -197,6 +242,8 @@ public class UnderwaterInterface {
         }
 
         closeWaterPopup();
+
+        saveElements();
     }
 
 
@@ -281,7 +328,7 @@ public class UnderwaterInterface {
 
     }
 
-    private boolean createButtonByName(String name){
+    private FuncButton createButtonByName(String name){
         FuncButton newButton = null;
         switch (name){
             case "take_photo_option":
@@ -435,7 +482,7 @@ public class UnderwaterInterface {
         }
 
 
-        if(newButton == null) return false;
+        if(newButton == null) return null;
 
         newButton.setButtonName(name);
 
@@ -443,11 +490,14 @@ public class UnderwaterInterface {
         relativeLayout.addView(newButton.getButton());
 
         if(inEditMode) setupButtonEditMode(newButton);
-        else newButton.setupListeners();
+        else {
+            newButton.setupListeners();
+            newButton.getButton().setVisibility(View.GONE);
+        }
 
         funcButtons.add(newButton);
 
-        return true;
+        return newButton;
 
     }
 
@@ -475,7 +525,7 @@ public class UnderwaterInterface {
             menuItem.setTextColor(mainActivity.getResources().getColor(android.R.color.white));
             menuItem.setBackgroundColor(Color.BLACK);
             menuItem.setAlpha(0.9f);
-            mainActivity.getResources().getResourceName(R.string.take_photo_option);
+            //mainActivity.getResources().getResourceName(R.string.take_photo_option);
 
             menuItem.setOnClickListener(v -> {
                 createButtonByName(mainActivity.getResources().getResourceEntryName(option));
