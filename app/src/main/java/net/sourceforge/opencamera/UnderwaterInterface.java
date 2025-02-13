@@ -33,6 +33,7 @@ import java.util.Set;
 
 public class UnderwaterInterface {
     private MainActivity mainActivity;
+    //btn = {FuncButton@25457}
     private Set<FuncButton> funcButtons = new LinkedHashSet<FuncButton>();
 
     private boolean inMode = false;
@@ -97,12 +98,23 @@ public class UnderwaterInterface {
                     int id = Integer.parseInt(idStr);
                     System.out.println("Сообщение: " + message + ", ID: " + id);
 
+                    FuncButton funcButton = createButtonByName(message);
+                    List<String> paramsStr = elementsMap.get(key);
+
+                    if(paramsStr.size() < 2) continue;
 
                     if(message.equals("universal_button_option")){
-                        FuncButton funcButton = createButtonByName(message);
-                        ((UniButton)funcButton).setListenersByNames(elementsMap.get(key));
+                        if(paramsStr.size() < 6)
+                            continue;
+                        List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(2, paramsStr.size()));
+
+                        ((UniButton)funcButton).setListenersByNames(listenersFuncs);
                     }
-                    else createButtonByName(message);
+
+                    funcButton.getButton().post(() -> {
+                        funcButton.getButton().setX(Float.parseFloat(paramsStr.get(0)));
+                        funcButton.getButton().setY(Float.parseFloat(paramsStr.get(1)));
+                    });
 
                 } catch (NumberFormatException e) {
                     System.err.println("Некорректный ID в ключе: " + key);
@@ -123,9 +135,13 @@ public class UnderwaterInterface {
 
             String btnSaveName = btn.getButtonName() + "#" + String.valueOf(i);
 
+            btnParams.add(String.valueOf(btn.getButton().getX()));
+            btnParams.add(String.valueOf(btn.getButton().getY()));
+
             if(btn.getButtonName().equals("universal_button_option")){
-                btnParams = ((UniButton)btn).getListenersNames();
+                btnParams.addAll(((UniButton)btn).getListenersNames());
             }
+
             elementsMap.put(btnSaveName, btnParams);
 
             i++;
@@ -287,7 +303,8 @@ public class UnderwaterInterface {
                 @Override
                 public void onDeleteClicked() {
                     ((ViewManager)btn.getButton().getParent()).removeView(btn.getButton());
-                    funcButtons.remove(btn.getButton());
+                    funcButtons.remove(btn);
+
                 }
             });
             mainActivity.getMainUI().layoutUI();
@@ -312,7 +329,7 @@ public class UnderwaterInterface {
                 @Override
                 public void onDeleteClicked() {
                     ((ViewManager)btn.getButton().getParent()).removeView(btn.getButton());
-                    funcButtons.remove(btn.getButton());
+                    funcButtons.remove(btn);
                 }
             });
             mainActivity.getMainUI().layoutUI();
