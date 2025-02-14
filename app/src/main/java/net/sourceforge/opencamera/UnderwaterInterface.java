@@ -2,8 +2,10 @@ package net.sourceforge.opencamera;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import android.content.Context;
@@ -101,12 +103,12 @@ public class UnderwaterInterface {
                     FuncButton funcButton = createButtonByName(message);
                     List<String> paramsStr = elementsMap.get(key);
 
-                    if(paramsStr.size() < 2) continue;
+                    if(paramsStr.size() < 4) continue;
 
                     if(message.equals("universal_button_option")){
-                        if(paramsStr.size() < 6)
+                        if(paramsStr.size() < 8)
                             continue;
-                        List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(2, paramsStr.size()));
+                        List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(4, paramsStr.size()));
 
                         ((UniButton)funcButton).setListenersByNames(listenersFuncs);
                     }
@@ -114,10 +116,19 @@ public class UnderwaterInterface {
                     funcButton.getButton().post(() -> {
                         funcButton.getButton().setX(Float.parseFloat(paramsStr.get(0)));
                         funcButton.getButton().setY(Float.parseFloat(paramsStr.get(1)));
+
                     });
 
-                } catch (NumberFormatException e) {
-                    System.err.println("Некорректный ID в ключе: " + key);
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) funcButton.getButton().getLayoutParams();
+
+                    params.width = (int)Float.parseFloat(paramsStr.get(2));
+                    params.height = (int)Float.parseFloat(paramsStr.get(3));
+
+                    funcButton.getButton().setLayoutParams(params);
+
+
+                } catch (Exception e) {
+                    System.err.println("Ошибка загрузки данных: " + key);
                 }
             } else {
                 System.err.println("Некорректный формат ключа: " + key);
@@ -138,9 +149,18 @@ public class UnderwaterInterface {
             btnParams.add(String.valueOf(btn.getButton().getX()));
             btnParams.add(String.valueOf(btn.getButton().getY()));
 
+            int w,h;
+            w = btn.getButton().getWidth();
+            h= btn.getButton().getHeight();
+
+            btnParams.add(String.valueOf(w));
+            btnParams.add(String.valueOf(h));
+
             if(btn.getButtonName().equals("universal_button_option")){
                 btnParams.addAll(((UniButton)btn).getListenersNames());
             }
+
+
 
             elementsMap.put(btnSaveName, btnParams);
 
@@ -323,6 +343,24 @@ public class UnderwaterInterface {
                     ((UniButton)btn).setOnLongClickListener(UniButton.FunctionsNamesRes[(int) holdSpinner.getSelectedItemId()]);
                     ((UniButton)btn).setOnPressListener(UniButton.FunctionsNamesRes[(int) pressSpinner.getSelectedItemId()]);
                     ((UniButton)btn).setOnReleaseListener(UniButton.FunctionsNamesRes[(int) releaseSpinner.getSelectedItemId()]);
+
+
+                    EditText sizeInput = waterDialog.findViewById(R.id.size_input);
+                    String inputText = sizeInput.getText().toString().trim();
+                    int size = btn.getButton().getWidth();
+
+                    if (!inputText.isEmpty()) {
+                        try {
+                            size = Integer.parseInt(inputText);
+                        } catch (NumberFormatException e) {
+                            Log.e("TAG", "Некорректный формат числа");
+                        }
+                    }
+
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btn.getButton().getLayoutParams();
+                    params.width = size;
+                    params.height = size;
+                    btn.getButton().setLayoutParams(params);
 
                 }
 

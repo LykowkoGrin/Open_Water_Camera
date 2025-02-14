@@ -15,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+
+import com.skydoves.colorpickerview.ColorPickerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +72,11 @@ public class WaterDialogHelper {
         for (Spinner spinner : Arrays.asList(spinner1, spinner2, spinner3, spinner4)) {
             spinner.setAdapter(adapter);
         }
+
+
+        EditText sizeInput = dialogView.findViewById(R.id.size_input);
+
+        sizeInput.setText(String.valueOf(uniButton.getButton().getWidth()));
 
         spinner1.setSelection(getSpinnerListId(uniButton.getClickListenerResId()));
         spinner2.setSelection(getSpinnerListId(uniButton.getLongClickListenerResId()));
