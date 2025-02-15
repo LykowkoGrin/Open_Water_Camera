@@ -1,6 +1,7 @@
 package net.sourceforge.opencamera;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -15,6 +16,8 @@ public class UniButton extends FuncButton {
     private int uniLongClickListenerRes = FunctionsNamesRes[0];
     private int uniOnPressListenerRes = FunctionsNamesRes[0];
     private int uniOnReleaseListenerRes = FunctionsNamesRes[0];
+
+    int color = Color.parseColor("#FFFFFFFF");
 
 
     public UniButton(ImageButton imageButton,MainActivity mainActivity){
@@ -85,6 +88,16 @@ public class UniButton extends FuncButton {
 
         return names;
     }
+
+    public void setFilerColor(int color){
+        this.color = color;
+        getButton().setColorFilter(color);
+
+    }
+    public int getFilterColor(){
+        return color;
+    }
+
 
 
     private Runnable getFuncByResId(int resourceId){

@@ -76,6 +76,9 @@ public class WaterDialogHelper {
 
         EditText sizeInput = dialogView.findViewById(R.id.size_input);
 
+        ColorPickerView colorPicker = dialogView.findViewById(R.id.color_picker_view);
+        colorPicker.setInitialColor(uniButton.getFilterColor());
+
         sizeInput.setText(String.valueOf(uniButton.getButton().getWidth()));
 
         spinner1.setSelection(getSpinnerListId(uniButton.getClickListenerResId()));

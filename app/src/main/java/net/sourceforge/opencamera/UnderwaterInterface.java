@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.skydoves.colorpickerview.ColorPickerView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,9 +82,8 @@ public class UnderwaterInterface {
             Type type = new TypeToken<Map<String, List<String>>>(){}.getType();
             elementsMap = gson.fromJson(reader, type);
 
-            if (elementsMap == null) {
-                elementsMap = new HashMap<>();
-            }
+            if (elementsMap == null) elementsMap = new HashMap<>();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,11 +106,12 @@ public class UnderwaterInterface {
                     if(paramsStr.size() < 4) continue;
 
                     if(message.equals("universal_button_option")){
-                        if(paramsStr.size() < 8)
+                        if(paramsStr.size() < 9)
                             continue;
                         List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(4, paramsStr.size()));
 
                         ((UniButton)funcButton).setListenersByNames(listenersFuncs);
+                        ((UniButton)funcButton).setFilerColor(Integer.parseInt(paramsStr.get(8)));
                     }
 
                     funcButton.getButton().post(() -> {
@@ -149,15 +150,13 @@ public class UnderwaterInterface {
             btnParams.add(String.valueOf(btn.getButton().getX()));
             btnParams.add(String.valueOf(btn.getButton().getY()));
 
-            int w,h;
-            w = btn.getButton().getWidth();
-            h= btn.getButton().getHeight();
-
-            btnParams.add(String.valueOf(w));
-            btnParams.add(String.valueOf(h));
+            btnParams.add(String.valueOf(btn.getButton().getWidth()));
+            btnParams.add(String.valueOf(btn.getButton().getHeight()));
 
             if(btn.getButtonName().equals("universal_button_option")){
                 btnParams.addAll(((UniButton)btn).getListenersNames());
+                btnParams.add(String.valueOf(((UniButton) btn).getFilterColor()));
+
             }
 
 
@@ -361,6 +360,9 @@ public class UnderwaterInterface {
                     params.width = size;
                     params.height = size;
                     btn.getButton().setLayoutParams(params);
+
+                    ColorPickerView colorPicker = waterDialog.findViewById(R.id.color_picker_view);
+                    ((UniButton)btn).setFilerColor(colorPicker.getColor());
 
                 }
 
