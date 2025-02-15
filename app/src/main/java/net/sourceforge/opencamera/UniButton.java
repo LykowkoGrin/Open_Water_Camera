@@ -139,4 +139,6 @@ public class UniButton extends FuncButton {
             R.string.take_photo_when_video_recording_option,
             R.string.switch_camera_option
     };
+
+    public static int minButtonSize = 50;
 }

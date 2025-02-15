@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -72,105 +73,94 @@ public class UnderwaterInterface {
 
 
         File file = new File(mainActivity.getFilesDir(), FILE_NAME);
-        Map<String, List<String>> elementsMap = new HashMap<>();
+        List<Map<String, List<String>>> elementsList = new ArrayList<>();
 
         if (!file.exists()) return;
 
         try (FileReader reader = new FileReader(file)) {
             Gson gson = new Gson();
 
-            Type type = new TypeToken<Map<String, List<String>>>(){}.getType();
-            elementsMap = gson.fromJson(reader, type);
+            Type type = new TypeToken<List<Map<String, List<String>>>>(){}.getType();
+            elementsList = gson.fromJson(reader, type);
 
-            if (elementsMap == null) elementsMap = new HashMap<>();
+            if (elementsList == null) elementsList = new ArrayList<>();
 
-
-        } catch (IOException e) {
+        } catch (Exception e){
             e.printStackTrace();
+            return;
         }
 
-        for(String key : elementsMap.keySet()){
-            String[] parts = key.split("#");
+        for(Map<String, List<String>> elementMap : elementsList) {
 
-            if (parts.length == 2) {
-                String message = parts[0];
-                String idStr = parts[1];
+            if (elementMap == null) continue;
 
-                try {
-                    int id = Integer.parseInt(idStr);
-                    System.out.println("Сообщение: " + message + ", ID: " + id);
+            try {
 
-                    FuncButton funcButton = createButtonByName(message);
-                    List<String> paramsStr = elementsMap.get(key);
+                Map.Entry<String, List<String>> entry = elementMap.entrySet().iterator().next();
 
-                    if(paramsStr.size() < 4) continue;
+                FuncButton funcButton = createButtonByName(entry.getKey());
 
-                    if(message.equals("universal_button_option")){
-                        if(paramsStr.size() < 9)
-                            continue;
-                        List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(4, paramsStr.size()));
+                List<String> paramsStr = entry.getValue();
 
-                        ((UniButton)funcButton).setListenersByNames(listenersFuncs);
-                        ((UniButton)funcButton).setFilerColor(Integer.parseInt(paramsStr.get(8)));
-                    }
+                if (paramsStr.size() < 4) continue;
 
-                    funcButton.getButton().post(() -> {
-                        funcButton.getButton().setX(Float.parseFloat(paramsStr.get(0)));
-                        funcButton.getButton().setY(Float.parseFloat(paramsStr.get(1)));
+                if (entry.getKey().equals("universal_button_option")) {
+                    if (paramsStr.size() < 9)
+                        continue;
+                    List<String> listenersFuncs = new ArrayList<>(paramsStr.subList(4, paramsStr.size()));
 
-                    });
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) funcButton.getButton().getLayoutParams();
-
-                    params.width = (int)Float.parseFloat(paramsStr.get(2));
-                    params.height = (int)Float.parseFloat(paramsStr.get(3));
-
-                    funcButton.getButton().setLayoutParams(params);
-
-
-                } catch (Exception e) {
-                    System.err.println("Ошибка загрузки данных: " + key);
+                    ((UniButton) funcButton).setListenersByNames(listenersFuncs);
+                    ((UniButton) funcButton).setFilerColor(Integer.parseInt(paramsStr.get(8)));
                 }
-            } else {
-                System.err.println("Некорректный формат ключа: " + key);
+
+                funcButton.getButton().post(() -> {
+                    funcButton.getButton().setX(Float.parseFloat(paramsStr.get(0)));
+                    funcButton.getButton().setY(Float.parseFloat(paramsStr.get(1)));
+
+                });
+
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) funcButton.getButton().getLayoutParams();
+
+                params.width = (int) Float.parseFloat(paramsStr.get(2));
+                params.height = (int) Float.parseFloat(paramsStr.get(3));
+
+                funcButton.getButton().setLayoutParams(params);
+
+
+            } catch (Exception e) {
+                System.err.println("Ошибка загрузки данных: " + e.toString());
             }
         }
-
     }
 
     private void saveElements(){
-        Map<String, List<String>> elementsMap = new HashMap<>();
+        List<Map<String, List<String>>> elementsList = new ArrayList<>();
 
-        int i = 0;
         for (FuncButton btn : funcButtons) {
+            // Создаем список параметров для кнопки
             List<String> btnParams = new ArrayList<>();
 
-            String btnSaveName = btn.getButtonName() + "#" + String.valueOf(i);
+            String btnSaveName = btn.getButtonName();
 
             btnParams.add(String.valueOf(btn.getButton().getX()));
             btnParams.add(String.valueOf(btn.getButton().getY()));
-
             btnParams.add(String.valueOf(btn.getButton().getWidth()));
             btnParams.add(String.valueOf(btn.getButton().getHeight()));
 
-            if(btn.getButtonName().equals("universal_button_option")){
-                btnParams.addAll(((UniButton)btn).getListenersNames());
-                btnParams.add(String.valueOf(((UniButton) btn).getFilterColor()));
-
+            if ("universal_button_option".equals(btnSaveName) && btn instanceof UniButton) {
+                UniButton uniBtn = (UniButton) btn;
+                btnParams.addAll(uniBtn.getListenersNames());
+                btnParams.add(String.valueOf(uniBtn.getFilterColor()));
             }
 
-
-
-            elementsMap.put(btnSaveName, btnParams);
-
-            i++;
+            elementsList.add(Collections.singletonMap(btnSaveName, btnParams));
         }
 
 
         File file = new File(mainActivity.getFilesDir(), FILE_NAME);
         try (FileWriter writer = new FileWriter(file)) {
             Gson gson = new Gson();
-            String json = gson.toJson(elementsMap);
+            String json = gson.toJson(elementsList);
             writer.write(json);
         } catch (IOException e) {
             e.printStackTrace();
@@ -355,6 +345,8 @@ public class UnderwaterInterface {
                             Log.e("TAG", "Некорректный формат числа");
                         }
                     }
+
+                    if(size < UniButton.minButtonSize) size = UniButton.minButtonSize;
 
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btn.getButton().getLayoutParams();
                     params.width = size;
