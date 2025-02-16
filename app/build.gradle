@@ -5,7 +5,7 @@ android {
     compileOptions.encoding = 'UTF-8'
 
     defaultConfig {
-        applicationId "net.sourceforge.opencamera"
+        applicationId "net.sourceforge.openwatercamera"
         minSdkVersion 15
         targetSdkVersion 29
 
