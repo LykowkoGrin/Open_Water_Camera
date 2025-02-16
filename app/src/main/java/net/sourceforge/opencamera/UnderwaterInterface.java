@@ -1,7 +1,9 @@
 package net.sourceforge.opencamera;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewManager;
@@ -131,6 +133,12 @@ public class UnderwaterInterface {
                 System.err.println("Ошибка загрузки данных: " + e.toString());
             }
         }
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        zoomSpeed = sharedPreferences.getInt("zoom_speed", 2);
+        inMode = sharedPreferences.getBoolean("in_water_mode", false);
+
+
     }
 
     private void saveElements(){
@@ -165,6 +173,11 @@ public class UnderwaterInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("zoom_speed", zoomSpeed);
+        editor.apply();
     }
 
 
@@ -200,6 +213,11 @@ public class UnderwaterInterface {
         mainActivity.findViewById(R.id.take_photo_when_video_recording).setVisibility(View.GONE);
 
         mainActivity.getMainUI().layoutUI();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("in_water_mode", true);
+        editor.apply();
     }
 
     public void stopWaterMode(){
@@ -220,6 +238,11 @@ public class UnderwaterInterface {
         }
 
         mainActivity.getMainUI().layoutUI();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("in_water_mode", false);
+        editor.apply();
 
     }
 

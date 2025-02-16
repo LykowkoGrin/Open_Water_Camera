@@ -687,6 +687,10 @@ public class MainActivity extends Activity {
             notificationManager.createNotificationChannel(channel);
         }
 
+        if(underwaterInterface.getModeState()){
+            underwaterInterface.startWaterMode();
+        }
+
         if( MyDebug.LOG )
             Log.d(TAG, "onCreate: total time for Activity startup: " + (System.currentTimeMillis() - debug_time));
     }
