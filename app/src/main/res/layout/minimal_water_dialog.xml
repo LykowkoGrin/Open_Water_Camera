@@ -20,6 +20,22 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Размер"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/size_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="3"
+                android:hint="Введите размер"
+                android:layout_marginBottom="16dp"/>
+
             <!-- Кнопки действий -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,6 +55,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/delete_dialog" />
+
+                <Button
+                    android:id="@+id/btnAccept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accept_dialog"/>
 
             </LinearLayout>
         </LinearLayout>

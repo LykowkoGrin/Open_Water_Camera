@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -109,7 +110,7 @@ public class WaterDialogHelper {
         return dialog;
     }
 
-    public static AlertDialog showMinimalDialog(Context context, DialogListener listener){
+    public static AlertDialog showMinimalDialog(Context context, int btnSize, DialogListener listener){
         if (!(context instanceof Activity)) {
             Log.e("DialogError", "Context is not an Activity!");
             return null;
@@ -132,6 +133,9 @@ public class WaterDialogHelper {
             return null;
         }
 
+        EditText sizeInput = dialogView.findViewById(R.id.size_input);
+        sizeInput.setText(String.valueOf(btnSize));
+
 
         dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
             dialog.dismiss();
@@ -141,11 +145,16 @@ public class WaterDialogHelper {
             dialog.dismiss();
         });
 
+        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
+            listener.onApplyClicked();
+            dialog.dismiss();
+        });
+
 
         return dialog;
     }
 
-    public static AlertDialog showZoomDialog(Context context,DialogListener listener){
+    public static AlertDialog showZoomDialog(Context context,int btnSize, DialogListener listener){
         if (!(context instanceof Activity)) {
             Log.e("DialogError", "Context is not an Activity!");
             return null;
@@ -162,6 +171,9 @@ public class WaterDialogHelper {
                 .setView(dialogView);
 
         AlertDialog dialog = builder.create();
+
+        EditText sizeInput = dialogView.findViewById(R.id.size_input);
+        sizeInput.setText(String.valueOf(btnSize));
 
         // Проверка активности перед отображением
         if (!((Activity) context).isFinishing()) {

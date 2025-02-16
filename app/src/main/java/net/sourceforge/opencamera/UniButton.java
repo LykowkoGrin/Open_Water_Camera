@@ -164,6 +164,4 @@ public class UniButton extends FuncButton {
             R.string.zoom_minus_option,
             R.string.leave_option
     };
-
-    public static int minButtonSize = 50;
 }

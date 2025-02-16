@@ -59,6 +59,9 @@ public class UnderwaterInterface {
         this.mainActivity = mainActivity;
         itemContainer = mainActivity.findViewById(R.id.water_item_container);
         waterPopup = mainActivity.findViewById(R.id.water_popup_container);
+
+        minButtonSize = dpToPx(mainActivity,50);
+
         addMenuItems();
         loadElements();
 
@@ -325,10 +328,27 @@ public class UnderwaterInterface {
         MovableButton movBtn = new MovableButton(btn.getButton());
 
         MovableButton.OnClickListener editClickListener = (() -> {
-            waterDialog = WaterDialogHelper.showMinimalDialog(mainActivity, new WaterDialogHelper.DialogListener() {
+            waterDialog = WaterDialogHelper.showMinimalDialog(mainActivity, movBtn.getButton().getWidth(), new WaterDialogHelper.DialogListener() {
                 @Override
                 public void onApplyClicked() {
+                    EditText sizeInput = waterDialog.findViewById(R.id.size_input);
+                    String inputText = sizeInput.getText().toString().trim();
+                    int size = btn.getButton().getWidth();
 
+                    if (!inputText.isEmpty()) {
+                        try {
+                            size = Integer.parseInt(inputText);
+                        } catch (NumberFormatException e) {
+                            Log.e("TAG", "Некорректный формат размера в showMinimalDialog");
+                        }
+                    }
+
+                    if(size < minButtonSize) size = minButtonSize;
+
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btn.getButton().getLayoutParams();
+                    params.width = size;
+                    params.height = size;
+                    btn.getButton().setLayoutParams(params);
                 }
 
                 @Override
@@ -364,11 +384,11 @@ public class UnderwaterInterface {
                         try {
                             size = Integer.parseInt(inputText);
                         } catch (NumberFormatException e) {
-                            Log.e("TAG", "Некорректный формат числа");
+                            Log.e("TAG", "Некорректный формат размера в editUniClickListener");
                         }
                     }
 
-                    if(size < UniButton.minButtonSize) size = UniButton.minButtonSize;
+                    if(size < minButtonSize) size = minButtonSize;
 
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btn.getButton().getLayoutParams();
                     params.width = size;
@@ -391,11 +411,30 @@ public class UnderwaterInterface {
         });
         MovableButton.OnClickListener editZoomClickListener = (() -> {
 
-            waterDialog = WaterDialogHelper.showZoomDialog(mainActivity, new WaterDialogHelper.DialogListener() {
+            waterDialog = WaterDialogHelper.showZoomDialog(mainActivity, movBtn.getButton().getWidth(), new WaterDialogHelper.DialogListener() {
                 @Override
                 public void onApplyClicked() {
                     EditText speedInput = waterDialog.findViewById(R.id.speed_input);
                     zoomSpeed = Integer.parseInt(speedInput.getText().toString().trim());
+
+                    EditText sizeInput = waterDialog.findViewById(R.id.size_input);
+                    String inputText = sizeInput.getText().toString().trim();
+                    int size = btn.getButton().getWidth();
+
+                    if (!inputText.isEmpty()) {
+                        try {
+                            size = Integer.parseInt(inputText);
+                        } catch (NumberFormatException e) {
+                            Log.e("TAG", "Некорректный формат размера в editZoomClickListener");
+                        }
+                    }
+
+                    if(size < minButtonSize) size = minButtonSize;
+
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btn.getButton().getLayoutParams();
+                    params.width = size;
+                    params.height = size;
+                    btn.getButton().setLayoutParams(params);
                 }
 
                 @Override
@@ -718,4 +757,6 @@ public class UnderwaterInterface {
     private static interface PauseListener{
         void run(boolean isPause);
     }
+
+    public static int minButtonSize;
 }
