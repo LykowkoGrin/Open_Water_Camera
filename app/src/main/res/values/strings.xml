@@ -1059,6 +1059,7 @@
     <string name="universal_button_option" translatable="false">Универсальная кнопка</string>
     <string name="zoom_plus_option" translatable="false">Приблизить</string>
     <string name="zoom_minus_option" translatable="false">Отдалить</string>
+    <string name="leave_option" translatable="false">Выйти</string>
 
     <string name="click_action" translatable="false">Действие при клике</string>
     <string name="hold_action" translatable="false">Действие при удерживании</string>

@@ -579,8 +579,8 @@ public class UnderwaterInterface {
             case "zoom_plus_option":
                 newButton = new FuncButton(new ImageButton(mainActivity));
                 RelativeLayout.LayoutParams zoomPlusCameraParams = new RelativeLayout.LayoutParams(
-                        dpToPx(mainActivity, 100),
-                        dpToPx(mainActivity, 100)
+                        dpToPx(mainActivity, 90),
+                        dpToPx(mainActivity, 90)
                 );
                 newButton.getButton().setLayoutParams(zoomPlusCameraParams);
                 newButton.getButton().setPadding(
@@ -605,8 +605,8 @@ public class UnderwaterInterface {
             case "zoom_minus_option":
                 newButton = new FuncButton(new ImageButton(mainActivity));
                 RelativeLayout.LayoutParams zoomMinusCameraParams = new RelativeLayout.LayoutParams(
-                        dpToPx(mainActivity, 100),
-                        dpToPx(mainActivity, 100)
+                        dpToPx(mainActivity, 90),
+                        dpToPx(mainActivity, 90)
                 );
                 newButton.getButton().setLayoutParams(zoomMinusCameraParams);
                 newButton.getButton().setPadding(
@@ -624,6 +624,26 @@ public class UnderwaterInterface {
                     int newZoom = zoomProgress - zoomSpeed;
                     zoomProgress = Math.max(newZoom, 0);
                     mainActivity.getPreview().zoomTo(zoomProgress);
+                });
+                break;
+            case "leave_option":
+                newButton = new FuncButton(new ImageButton(mainActivity));
+                RelativeLayout.LayoutParams leaveAppParams = new RelativeLayout.LayoutParams(
+                        dpToPx(mainActivity, 90),
+                        dpToPx(mainActivity, 90)
+                );
+                newButton.getButton().setLayoutParams(leaveAppParams);
+                newButton.getButton().setPadding(
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10));
+                newButton.getButton().setScaleType(ImageView.ScaleType.FIT_CENTER);
+                //newButton.getButton().setContentDescription(mainActivity.getString(R.string.take_photo));
+                newButton.getButton().setImageResource(R.drawable.baseline_output_72);
+                newButton.getButton().setBackgroundDrawable(null);
+                newButton.setOnClickListener((View v) -> {
+                    mainActivity.moveTaskToBack(true);
                 });
                 break;
         }
@@ -660,9 +680,10 @@ public class UnderwaterInterface {
                 R.string.take_photo_when_video_recording_option,
                 R.string.pause_video_option,
                 R.string.switch_camera_option,
-                R.string.universal_button_option,
                 R.string.zoom_plus_option,
-                R.string.zoom_minus_option
+                R.string.zoom_minus_option,
+                R.string.leave_option,
+                R.string.universal_button_option
         };
 
         for (int option : options) {

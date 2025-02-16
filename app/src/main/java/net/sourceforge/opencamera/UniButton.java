@@ -143,6 +143,10 @@ public class UniButton extends FuncButton {
                     zoomProgress = Math.max(newZoom, 0);
                     mainActivity.getPreview().zoomTo(zoomProgress);
                 };
+            case R.string.leave_option:
+                return () -> {
+                    mainActivity.moveTaskToBack(true);
+                };
 
             default: return () -> {};
         }
@@ -157,7 +161,8 @@ public class UniButton extends FuncButton {
             R.string.take_photo_when_video_recording_option,
             R.string.switch_camera_option,
             R.string.zoom_plus_option,
-            R.string.zoom_minus_option
+            R.string.zoom_minus_option,
+            R.string.leave_option
     };
 
     public static int minButtonSize = 50;
