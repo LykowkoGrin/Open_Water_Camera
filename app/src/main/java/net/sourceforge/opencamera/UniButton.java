@@ -126,6 +126,24 @@ public class UniButton extends FuncButton {
             case R.string.switch_camera_option:
                 return () -> mainActivity.clickedSwitchCamera(null);
 
+            case R.string.zoom_plus_option:
+                return () -> {
+                    int zoomProgress = mainActivity.getPreview().getCameraController().getZoom();
+                    int maxZoom = mainActivity.getPreview().getMaxZoom();
+
+                    int newZoom = zoomProgress + UnderwaterInterface.getZoomSpeed();
+                    zoomProgress = Math.min(newZoom, maxZoom);
+                    mainActivity.getPreview().zoomTo(zoomProgress);
+                };
+            case R.string.zoom_minus_option:
+                return () -> {
+                    int zoomProgress = mainActivity.getPreview().getCameraController().getZoom();
+
+                    int newZoom = zoomProgress - UnderwaterInterface.getZoomSpeed();
+                    zoomProgress = Math.max(newZoom, 0);
+                    mainActivity.getPreview().zoomTo(zoomProgress);
+                };
+
             default: return () -> {};
         }
 
@@ -137,7 +155,9 @@ public class UniButton extends FuncButton {
             R.string.take_video_option,
             R.string.pause_video_option,
             R.string.take_photo_when_video_recording_option,
-            R.string.switch_camera_option
+            R.string.switch_camera_option,
+            R.string.zoom_plus_option,
+            R.string.zoom_minus_option
     };
 
     public static int minButtonSize = 50;

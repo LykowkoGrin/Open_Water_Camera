@@ -193,9 +193,6 @@ public class UnderwaterInterface {
             button.getButton().setVisibility(View.VISIBLE);
         }
 
-        maxZoom = mainActivity.getPreview().getMaxZoom();
-        zoomProgress = maxZoom-mainActivity.getPreview().getCameraController().getZoom();
-
         mainActivity.getMainUI().setImmersiveMode(true);
         mainActivity.findViewById(R.id.take_photo).setVisibility(View.GONE);
         mainActivity.findViewById(R.id.water_edit_mode).setVisibility(View.VISIBLE);
@@ -369,14 +366,39 @@ public class UnderwaterInterface {
             mainActivity.getMainUI().layoutUI();
 
         });
+        MovableButton.OnClickListener editZoomClickListener = (() -> {
+
+            waterDialog = WaterDialogHelper.showZoomDialog(mainActivity, new WaterDialogHelper.DialogListener() {
+                @Override
+                public void onApplyClicked() {
+                    EditText speedInput = waterDialog.findViewById(R.id.speed_input);
+                    zoomSpeed = Integer.parseInt(speedInput.getText().toString().trim());
+                }
+
+                @Override
+                public void onDeleteClicked() {
+                    ((ViewManager)btn.getButton().getParent()).removeView(btn.getButton());
+                    funcButtons.remove(btn);
+
+                }
+            });
+            mainActivity.getMainUI().layoutUI();
+
+        });
 
         if(btn.getButtonName().equals("universal_button_option"))
             movBtn.setOnClickListener(editUniClickListener);
+        else if(btn.getButtonName().equals("zoom_plus_option") || btn.getButtonName().equals("zoom_minus_option"))
+            movBtn.setOnClickListener(editZoomClickListener);
         else
             movBtn.setOnClickListener(editClickListener);
 
         movBtn.setupListeners();
 
+    }
+
+    static public int getZoomSpeed(){
+        return zoomSpeed;
     }
 
     private FuncButton createButtonByName(String name){
@@ -548,9 +570,12 @@ public class UnderwaterInterface {
                 newButton.getButton().setImageResource(R.drawable.baseline_add_circle_outline_72);
                 newButton.getButton().setBackgroundDrawable(null);
                 newButton.setOnClickListener((View v) -> {
-                    int newZoom = zoomProgress - zoomSpeed;
-                    zoomProgress = Math.max(newZoom, 0);
-                    mainActivity.getPreview().zoomTo(maxZoom - zoomProgress);
+                    int zoomProgress = mainActivity.getPreview().getCameraController().getZoom();
+                    int maxZoom = mainActivity.getPreview().getMaxZoom();
+
+                    int newZoom = zoomProgress + zoomSpeed;
+                    zoomProgress = Math.min(newZoom, maxZoom);
+                    mainActivity.getPreview().zoomTo(zoomProgress);
                 });
                 break;
 
@@ -571,9 +596,11 @@ public class UnderwaterInterface {
                 newButton.getButton().setImageResource(R.drawable.baseline_remove_circle_outline_72);
                 newButton.getButton().setBackgroundDrawable(null);
                 newButton.setOnClickListener((View v) -> {
-                    int newZoom = zoomProgress + zoomSpeed;
-                    zoomProgress = Math.min(newZoom, maxZoom);
-                    mainActivity.getPreview().zoomTo(maxZoom - zoomProgress);
+                    int zoomProgress = mainActivity.getPreview().getCameraController().getZoom();
+
+                    int newZoom = zoomProgress - zoomSpeed;
+                    zoomProgress = Math.max(newZoom, 0);
+                    mainActivity.getPreview().zoomTo(zoomProgress);
                 });
                 break;
         }
@@ -636,9 +663,7 @@ public class UnderwaterInterface {
         }
     }
 
-    private static int zoomProgress;
     private static int zoomSpeed = 2;
-    private static int maxZoom;
 
 
     final static String FILE_NAME = "WaterInterface.json";

@@ -145,5 +145,46 @@ public class WaterDialogHelper {
         return dialog;
     }
 
+    public static AlertDialog showZoomDialog(Context context,DialogListener listener){
+        if (!(context instanceof Activity)) {
+            Log.e("DialogError", "Context is not an Activity!");
+            return null;
+        }
 
+        // Создание View из layout-файла
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.zoom_water_dialog, null);
+
+        EditText speedInput = dialogView.findViewById(R.id.speed_input);
+        speedInput.setText(String.valueOf(UnderwaterInterface.getZoomSpeed()));
+
+        // Создание диалога с правильной темой
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        // Проверка активности перед отображением
+        if (!((Activity) context).isFinishing()) {
+            dialog.show();
+        } else {
+            Log.e("DialogError", "Activity is finishing!");
+            return null;
+        }
+
+
+        dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        dialogView.findViewById(R.id.btnAccept).setOnClickListener(v -> {
+            listener.onApplyClicked();
+            dialog.dismiss();
+        });
+        dialogView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+            listener.onDeleteClicked();
+            dialog.dismiss();
+        });
+
+
+        return dialog;
+    }
 }
