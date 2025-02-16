@@ -1057,6 +1057,8 @@
     <string name="take_photo_when_video_recording_option" translatable="false">Сделать фото во время записи</string>
     <string name="switch_camera_option" translatable="false">Повернуть камеру</string>
     <string name="universal_button_option" translatable="false">Универсальная кнопка</string>
+    <string name="zoom_plus_option" translatable="false">Приблизить</string>
+    <string name="zoom_minus_option" translatable="false">Отдалить</string>
 
     <string name="click_action" translatable="false">Действие при клике</string>
     <string name="hold_action" translatable="false">Действие при удерживании</string>

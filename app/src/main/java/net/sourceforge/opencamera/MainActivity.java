@@ -4870,6 +4870,8 @@ public class MainActivity extends Activity {
     // if we change this, remember that any page linked to must abide by Google Play developer policies!
     //public static final String DonateLink = "https://play.google.com/store/apps/details?id=harman.mark.donation";
 
+    //Harman, You are legend
+
     public Preview getPreview() {
         return this.preview;
     }

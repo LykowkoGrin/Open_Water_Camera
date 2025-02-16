@@ -193,6 +193,8 @@ public class UnderwaterInterface {
             button.getButton().setVisibility(View.VISIBLE);
         }
 
+        maxZoom = mainActivity.getPreview().getMaxZoom();
+        zoomProgress = maxZoom-mainActivity.getPreview().getCameraController().getZoom();
 
         mainActivity.getMainUI().setImmersiveMode(true);
         mainActivity.findViewById(R.id.take_photo).setVisibility(View.GONE);
@@ -528,6 +530,52 @@ public class UnderwaterInterface {
                 newButton.getButton().setPadding(0, 0, 0, 0);
 
                 break;
+
+            case "zoom_plus_option":
+                newButton = new FuncButton(new ImageButton(mainActivity));
+                RelativeLayout.LayoutParams zoomPlusCameraParams = new RelativeLayout.LayoutParams(
+                        dpToPx(mainActivity, 100),
+                        dpToPx(mainActivity, 100)
+                );
+                newButton.getButton().setLayoutParams(zoomPlusCameraParams);
+                newButton.getButton().setPadding(
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10));
+                newButton.getButton().setScaleType(ImageView.ScaleType.FIT_CENTER);
+                //newButton.getButton().setContentDescription(mainActivity.getString(R.string.take_photo));
+                newButton.getButton().setImageResource(R.drawable.baseline_add_circle_outline_72);
+                newButton.getButton().setBackgroundDrawable(null);
+                newButton.setOnClickListener((View v) -> {
+                    int newZoom = zoomProgress - zoomSpeed;
+                    zoomProgress = Math.max(newZoom, 0);
+                    mainActivity.getPreview().zoomTo(maxZoom - zoomProgress);
+                });
+                break;
+
+            case "zoom_minus_option":
+                newButton = new FuncButton(new ImageButton(mainActivity));
+                RelativeLayout.LayoutParams zoomMinusCameraParams = new RelativeLayout.LayoutParams(
+                        dpToPx(mainActivity, 100),
+                        dpToPx(mainActivity, 100)
+                );
+                newButton.getButton().setLayoutParams(zoomMinusCameraParams);
+                newButton.getButton().setPadding(
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10));
+                newButton.getButton().setScaleType(ImageView.ScaleType.FIT_CENTER);
+                //newButton.getButton().setContentDescription(mainActivity.getString(R.string.take_photo));
+                newButton.getButton().setImageResource(R.drawable.baseline_remove_circle_outline_72);
+                newButton.getButton().setBackgroundDrawable(null);
+                newButton.setOnClickListener((View v) -> {
+                    int newZoom = zoomProgress + zoomSpeed;
+                    zoomProgress = Math.min(newZoom, maxZoom);
+                    mainActivity.getPreview().zoomTo(maxZoom - zoomProgress);
+                });
+                break;
         }
 
 
@@ -562,7 +610,9 @@ public class UnderwaterInterface {
                 R.string.take_photo_when_video_recording_option,
                 R.string.pause_video_option,
                 R.string.switch_camera_option,
-                R.string.universal_button_option
+                R.string.universal_button_option,
+                R.string.zoom_plus_option,
+                R.string.zoom_minus_option
         };
 
         for (int option : options) {
@@ -586,7 +636,9 @@ public class UnderwaterInterface {
         }
     }
 
-
+    private static int zoomProgress;
+    private static int zoomSpeed = 2;
+    private static int maxZoom;
 
 
     final static String FILE_NAME = "WaterInterface.json";
