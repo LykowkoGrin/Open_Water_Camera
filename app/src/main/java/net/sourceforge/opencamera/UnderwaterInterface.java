@@ -684,6 +684,36 @@ public class UnderwaterInterface {
                     mainActivity.moveTaskToBack(true);
                 });
                 break;
+
+            case "block_water_buttons":
+                newButton = new FuncButton(new ImageButton(mainActivity));
+                RelativeLayout.LayoutParams blockerParams = new RelativeLayout.LayoutParams(
+                        dpToPx(mainActivity, 90),
+                        dpToPx(mainActivity, 90)
+                );
+                newButton.getButton().setLayoutParams(blockerParams);
+                newButton.getButton().setPadding(
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10),
+                        dpToPx(mainActivity, 10));
+                newButton.getButton().setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                newButton.getButton().setImageResource(R.drawable.baseline_block_72);
+                newButton.getButton().setBackgroundDrawable(null);
+                newButton.setOnClickListener((View v) -> {
+                    View waterEditButton = mainActivity.findViewById(R.id.water_edit_mode);
+                    View waterModeButton = mainActivity.findViewById(R.id.water_mode);
+                    if(waterEditButton.getVisibility() == View.GONE && waterModeButton.getVisibility() == View.GONE){
+                        waterEditButton.setVisibility(View.VISIBLE);
+                        waterModeButton.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        waterEditButton.setVisibility(View.GONE);
+                        waterModeButton.setVisibility(View.GONE);
+                    }
+                });
+                break;
         }
 
 
@@ -721,6 +751,7 @@ public class UnderwaterInterface {
                 R.string.zoom_plus_option,
                 R.string.zoom_minus_option,
                 R.string.leave_option,
+                R.string.block_water_buttons,
                 R.string.universal_button_option
         };
 
