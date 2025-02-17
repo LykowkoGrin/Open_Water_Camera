@@ -63,7 +63,18 @@ public class UnderwaterInterface {
         minButtonSize = dpToPx(mainActivity,50);
 
         addMenuItems();
-        loadElements();
+        try{
+            loadElements();
+        }
+        catch (Exception e){
+            Log.e("loadElements error",e.toString());
+
+            zoomSpeed = 2;
+            inMode = false;
+            funcButtons.clear();
+
+            saveElements();
+        }
 
         mainActivity.findViewById(R.id.water_edit_mode).setOnClickListener(v -> startEditMode());
         mainActivity.findViewById(R.id.done_edit_mode).setOnClickListener(v -> stopEditMode());
