@@ -797,6 +797,9 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         if( MyDebug.LOG )
             Log.d(TAG, "mySurfaceCreated");
         this.has_surface = true;
+
+
+
         this.openCamera();
     }
 
@@ -1705,6 +1708,8 @@ public class Preview implements SurfaceHolder.Callback, TextureView.SurfaceTextu
         if( MyDebug.LOG ) {
             Log.d(TAG, "openCamera: total time for cameraOpened: " + (System.currentTimeMillis() - debug_time));
         }
+
+
     }
 
 

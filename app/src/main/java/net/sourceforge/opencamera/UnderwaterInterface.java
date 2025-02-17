@@ -54,7 +54,6 @@ public class UnderwaterInterface {
 
 
 
-
     UnderwaterInterface(MainActivity mainActivity){
         this.mainActivity = mainActivity;
         itemContainer = mainActivity.findViewById(R.id.water_item_container);
@@ -140,6 +139,8 @@ public class UnderwaterInterface {
                 params.width = (int) Float.parseFloat(paramsStr.get(2));
                 params.height = (int) Float.parseFloat(paramsStr.get(3));
 
+                funcButton.setupListeners();
+
                 funcButton.getButton().setLayoutParams(params);
 
 
@@ -150,8 +151,6 @@ public class UnderwaterInterface {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
         zoomSpeed = sharedPreferences.getInt("zoom_speed", 2);
-        inMode = sharedPreferences.getBoolean("in_water_mode", false);
-
 
     }
 
@@ -194,7 +193,6 @@ public class UnderwaterInterface {
         editor.apply();
     }
 
-
     public boolean waterPopupIsOpen(){
         return waterPopup.getVisibility() == View.VISIBLE;
     }
@@ -227,11 +225,6 @@ public class UnderwaterInterface {
         mainActivity.findViewById(R.id.take_photo_when_video_recording).setVisibility(View.GONE);
 
         mainActivity.getMainUI().layoutUI();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("in_water_mode", true);
-        editor.apply();
     }
 
     public void stopWaterMode(){
@@ -252,11 +245,6 @@ public class UnderwaterInterface {
         }
 
         mainActivity.getMainUI().layoutUI();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("in_water_mode", false);
-        editor.apply();
 
     }
 

@@ -2165,7 +2165,9 @@ public class MainUI {
     public void closePopup() {
         if( MyDebug.LOG )
             Log.d(TAG, "close popup");
-        if(underwaterInterface.waterPopupIsOpen()) underwaterInterface.closeWaterPopup();
+        if(underwaterInterface.waterPopupIsOpen())
+            underwaterInterface.closeWaterPopup();
+
         if( popupIsOpen() ) {
             clearRemoteControlForPopup(); // must be called before we set popup_view_is_open to false; and before clearSelectionState() so we know which highlighting to disable
             clearSelectionState();

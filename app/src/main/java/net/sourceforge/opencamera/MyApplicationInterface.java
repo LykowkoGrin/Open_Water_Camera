@@ -2326,12 +2326,16 @@ public class MyApplicationInterface extends BasicApplicationInterface {
                     int new_height = Math.round(scale * height);
                     if( MyDebug.LOG )
                         Log.d(TAG, "    scale video thumbnail to " + new_width + " x " + new_height);
+
+                    //Lykowko Grin kostil->
+                    //if(new_width != 0 && new_height != 0){
                     Bitmap scaled_thumbnail = Bitmap.createScaledBitmap(thumbnail, new_width, new_height, true);
                     // careful, as scaled_thumbnail is sometimes not a copy!
                     if( scaled_thumbnail != thumbnail ) {
                         thumbnail.recycle();
                         thumbnail = scaled_thumbnail;
                     }
+                    //}
                 }
                 final Bitmap thumbnail_f = thumbnail;
                 main_activity.runOnUiThread(new Runnable() {
